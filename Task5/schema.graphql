@@ -1,0 +1,54 @@
+type Query {
+  """Получить клиента по ID. Эквивалент GET /clients/{id}."""
+  client(id: ID!): Client
+
+  """
+  Получить документы клиента отдельно.
+  Эквивалент GET /clients/{id}/documents.
+  Полезно, когда клиент уже загружен, а документы нужны позже/отдельно.
+  """
+  documents(clientId: ID!, first: Int, after: String): DocumentConnection!
+
+  """
+  Получить родственников клиента отдельно.
+  Эквивалент GET /clients/{id}/relatives.
+  """
+  relatives(clientId: ID!, first: Int, after: String): RelativeConnection!
+}
+
+"""
+Карточка клиента. Содержит скалярные поля и ленивые
+вложенные коллекции — резолвятся только если запрошены.
+"""
+type Client {
+  id: ID!
+  name: String
+  age: Int
+
+  """Документы клиента. Эквивалент GET /clients/{id}/documents."""
+  documents(first: Int, after: String): DocumentConnection!
+
+  """Родственники клиента. Эквивалент GET /clients/{id}/relatives."""
+  relatives(first: Int, after: String): RelativeConnection!
+}
+
+"""Документ клиента."""
+type Document {
+  id: ID!
+  type: String
+  number: String
+  issueDate: String
+  expiryDate: String
+}
+
+"""Родственник клиента."""
+type Relative {
+  id: ID!
+  relationType: String
+  name: String
+  age: Int
+}
+
+schema {
+  query: Query
+}
